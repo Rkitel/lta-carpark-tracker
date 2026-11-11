@@ -20,8 +20,13 @@ import {
   computeCommuteVerdict,
   BackendConfig,
 } from './services/carparkService';
+import {
+  predictCommuteDecision,
+  CommutePredictionInput,
+} from './services/predictionEngine';
 import { Navbar } from './components/Navbar';
 import { FilterBar } from './components/FilterBar';
+import { CommutePredictionPanel } from './components/CommutePredictionPanel';
 import { CommuteVerdictCard } from './components/CommuteVerdictCard';
 import { BusBoardStop04121 } from './components/BusBoardStop04121';
 import { InteractiveMap } from './components/InteractiveMap';
@@ -105,6 +110,23 @@ export default function App() {
     sortBy: 'best_value',
   });
 
+  // Commute Prediction Input state
+  const [predictionInput, setPredictionInput] = useState<CommutePredictionInput>({
+    departureWindow: 'now',
+    durationHours: 4,
+    origin: 'east',
+    rainWeather: false,
+  });
+
+  // Sync duration between filter and prediction input
+  useEffect(() => {
+    setPredictionInput((prev) =>
+      prev.durationHours !== filters.durationHours
+        ? { ...prev, durationHours: filters.durationHours }
+        : prev
+    );
+  }, [filters.durationHours]);
+
   // Save favorites
   useEffect(() => {
     saveFavorites(favorites);
@@ -163,6 +185,11 @@ export default function App() {
   const commuteComparison: CommuteComparison = useMemo(() => {
     return computeCommuteVerdict(carparks, busArrivals, filters.durationHours);
   }, [carparks, busArrivals, filters.durationHours]);
+
+  // Compute predictive decision (Take Bus vs Drive)
+  const commutePrediction = useMemo(() => {
+    return predictCommuteDecision(carparks, busArrivals, predictionInput);
+  }, [carparks, busArrivals, predictionInput]);
 
   // Filtered carparks for directory and map
   const filteredCarparks = useMemo(() => {
@@ -299,13 +326,23 @@ export default function App() {
       <main className="flex-1 max-w-7xl mx-auto w-full p-4 sm:p-6 lg:p-8 space-y-6">
         {activeTab === 'verdict' && (
           <div className="space-y-6">
-            {/* The Live Commute Verdict Engine */}
+            {/* The Result Prediction Engine: Tell me to take bus or drive */}
+            <CommutePredictionPanel
+              prediction={commutePrediction}
+              predictionInput={predictionInput}
+              setPredictionInput={setPredictionInput}
+              onSelectCarpark={(cp) => setSelectedCarpark(cp)}
+              onViewBusBoard={() => setActiveTab('busboard')}
+            />
+
+            {/* Live Commute Comparison Breakdown */}
             <CommuteVerdictCard
               comparison={commuteComparison}
               selectedDuration={filters.durationHours}
-              onSelectDuration={(hrs) =>
-                setFilters((p) => ({ ...p, durationHours: hrs }))
-              }
+              onSelectDuration={(hrs) => {
+                setFilters((p) => ({ ...p, durationHours: hrs }));
+                setPredictionInput((p) => ({ ...p, durationHours: hrs }));
+              }}
               onSelectCarpark={(cp) => setSelectedCarpark(cp)}
               onViewBusBoard={() => setActiveTab('busboard')}
             />
