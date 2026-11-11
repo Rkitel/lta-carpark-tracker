@@ -194,14 +194,14 @@ export const CommutePredictionPanel: React.FC<CommutePredictionPanelProps> = ({
             </div>
 
             <div className="p-2.5 rounded-xl bg-white/10 backdrop-blur-xs border border-white/15">
-              <span className="text-white/70 block text-[11px]">Money Saved Today</span>
+              <span className="text-white/70 block text-[11px]">Money Saved Today (Bus)</span>
               <span className="text-lg font-bold font-mono text-emerald-200">
                 S$ {prediction.moneySaved.toFixed(2)}
               </span>
             </div>
 
             <div className="p-2.5 rounded-xl bg-white/10 backdrop-blur-xs border border-white/15">
-              <span className="text-white/70 block text-[11px]">Next Bus 04121 Ready</span>
+              <span className="text-white/70 block text-[11px]">Time To Next Bus</span>
               <span className="text-lg font-bold font-mono">
                 Bus {prediction.connectedBusService} in ~{prediction.nextBusArrivalMins}m
               </span>
@@ -221,7 +221,7 @@ export const CommutePredictionPanel: React.FC<CommutePredictionPanelProps> = ({
       <div className="p-5 sm:p-6 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
         <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3 flex items-center gap-1.5">
           <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-          <span>Recommended Execution Route</span>
+          <span>Recommended Execution Route (If Driving)</span>
         </h4>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
