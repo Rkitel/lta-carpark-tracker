@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import healthHandler from './api/health.ts';
 import carparkAvailabilityHandler from './api/carparkavailability.ts';
 import busArrivalHandler from './api/busarrival.ts';
+import onemapHandler from './api/onemap.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,6 +37,11 @@ async function startServer() {
 
   app.all('/api/bus-arrival', (req, res) => {
     return busArrivalHandler(req, res);
+  });
+
+  // OneMap API proxies (search, route, revgeocode, token)
+  app.all('/api/onemap*', (req, res) => {
+    return onemapHandler(req, res);
   });
 
   if (!isProd) {

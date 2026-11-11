@@ -23,6 +23,7 @@ import {
 import {
   predictCommuteDecision,
   CommutePredictionInput,
+  DEFAULT_START_LOCATION,
 } from './services/predictionEngine';
 import { Navbar } from './components/Navbar';
 import { FilterBar } from './components/FilterBar';
@@ -112,6 +113,7 @@ export default function App() {
 
   // Commute Prediction Input state
   const [predictionInput, setPredictionInput] = useState<CommutePredictionInput>({
+    startLocation: DEFAULT_START_LOCATION,
     departureWindow: 'now',
     durationHours: 4,
     origin: 'east',
